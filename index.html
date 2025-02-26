@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>LoC-LIC</title>   <!--changeMe--> 
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">LoC-LIC: Low Complexity Learned Image Coding Using Hierarchical Feature Transforms</h1> <!--changeMe-->
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://orcid.org/0009-0008-0752-2406" target="_blank">Ayman A. Ameen</a><sup>1,2</sup>,</span> <!--changeMe-->
+                <span class="author-block">
+                  <a href="https://orcid.org/0000-0001-7721-0426" target="_blank">Thomas Richter</a><sup>1</sup>,</span> <!--changeMe-->
+                  <span class="author-block">
+                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank"> André Kaup</a><sup>3</sup>,</span> <!--changeMe-->
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block"><sup>1</sup> Fraunhofer Institute for Integrated Circuits IIS, Erlangen, Germany</span> <!--changeMe-->
+                    <span class="author-block"><sup>2</sup> Department of Physics, Faculty of Science, Sohag University, Egypt</span> <!--changeMe-->
+                    <span class="author-block"><sup>3</sup> Friedrich-Alexander University at Erlangen-Nürnberg, Erlangen, Germany</span> <!--changeMe-->
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link --> <!--changeMe-->
+                      <span class="link-block">
+                        <a href="static/pdfs/paper.pdf" target="_blank" 
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                  <!-- Github link --> <!--changeMe-->
+                  <span class="link-block">
+                    <a href="https://github.com/Ayman-Ameen/loc-lic" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code(Comming Soon)</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link --> <!--changeMe-->
+                <span class="link-block">
+                  <a href="https://arxiv.org/" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            <!--changeMe-->
+            Current learned image compression models typically exhibit high complexity, which demands significant computational resources. To overcome these challenges, we propose an innovative approach that employs hierarchical feature extraction transforms to significantly reduce complexity while preserving bit rate reduction efficiency. Our novel architecture achieves this by using fewer channels for high spatial resolution inputs/feature maps. On the other hand, feature maps with a large number of channels have reduced spatial dimensions, thereby cutting down on computational load without sacrificing performance. This strategy effectively reduces the forward pass complexity from 1256 kMAC/Pixel to just 270  kMAC/Pixel. As a result, the reduced complexity model can open the way for learned image compression models to operate efficiently across various devices and pave the way for the development of new architectures in image compression technology.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- Method section -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview</h2>
+        <div class="content has-text-justified">
+            <p>
+            <!--changeMe-->
+            Our novel approach utilizes hierarchical feature extraction transforms to map images from the pixel domain to the latent domain and vice versa, reducing both memory and computational complexity. The key features of our approach include:            </p>
+            <ul>
+              <li>Low complexity autoencoder through our novel hierarchical feature extraction, which has progressively deeper feature representations with a lower number of feature maps for larger sizes and higher features for smaller sizes, allowing reduction forward pass complexity from 1256 kMAC/Pixel to only 270 kMAC/Pixel.</li>
+              <li>Hyper-autoencoder with multi-reference entropy model maintaining competitive performance to the state-of-the-art models.</li>
+              <li>A large dataset that spans the large part of the image space manifold.</li>
+            </ul>        
+          </p>
+          <figure>
+            <img src="static/images/model.png" alt="Method Diagram">
+            <figcaption>Overall view of the proposed architecture with hierarchical feature encoder and decoder.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results section -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        <div class="content has-text-justified">
+          <p>
+            Our proposed method demonstrates significant improvements in both computational efficiency. The following figures illustrate the performance of our model compared to state-of-the-art methods.
+          </p>    
+            <div class="hero-body">
+              <div class="container">
+                <div class="columns is-centered">
+                  <div class="column is-half">
+                    <div class="item">
+                      <!-- Your image here --> <!--changeMe-->
+                      <img src="static/images/bd_psnr_256_256.png" alt="MY ALT TEXT"/>
+                      <h2 class="subtitle has-text-centered">
+                      </h2>
+                    </div>
+                  </div>
+                  <div class="column is-half">
+                    <div class="item">
+                      <!-- Your image here --> <!--changeMe-->
+                      <img src="static/images/bd_ssim_256_256.png" alt="MY ALT TEXT"/>
+                      <h2 class="subtitle has-text-centered">
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>          
+        </div>
+        </div>
+        </div>
+        </div>
+        </section>
+
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <!-- Your image here --> <!--changeMe-->
+        <img src="static/images/CLIC_3_bitrate_zoom_72.png" alt="MY ALT TEXT"/>
+        <h2 class="subtitle has-text-centered">
+        </h2>
+      </div>
+      <div class="item">
+        <!-- Your image here --> <!--changeMe-->
+        <img src="static/images/Kodak_7_bitrate_zoom_72.png" alt="MY ALT TEXT"/>
+        <h2 class="subtitle has-text-centered">
+       </h2>
+     </div>
+  </div>
+</div>
+</div>
+</section>
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+        <pre><code>
+      @article{ameen2021loclic,
+        title={LoC-LIC: Low Complexity Learned Image Coding Using Hierarchical Feature Transforms},
+        author={Ameen, Ayman A and Richter, Thomas and Kaup, Andr{\'e}},
+        year={2025}
+  }
+      </code></pre>
+    </div>
+</section>
+
+  </body>
+  </html>
