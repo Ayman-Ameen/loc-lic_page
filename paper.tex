@@ -1,0 +1,260 @@
+% Template for ICIP-2026 paper; to be used with:
+%          spconf.sty  - ICASSP/ICIP LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{spconf,amsmath,amssymb,graphicx,subcaption}
+\usepackage{url}
+\usepackage{hyperref}
+% \addbibresource{References.bib}
+\graphicspath{ {./images/} }
+
+% Title.
+% ------
+\title{Low Complexity Learned Image Coding Using Hierarchical Feature Transforms (LoC-LIC)}
+%
+% Single address.
+% ---------------
+% \name{Ayman A. Ameen$^{\star \dagger}$, Thomas Richter$^{\ddagger}$, and André Kaup$^{\star}$}
+\name{Ayman A. Ameen$^{\star}$, Thomas Richter$^{\ddagger}$, and André Kaup$^{\star}$}
+\address{$^{\star}$ Multimedia Communications and Signal Processing,\\
+ Friedrich-Alexander University Erlangen-Nürnberg, Germany \\
+% $^{\dagger}$ Department of Physics, Faculty of Science, Sohag University, Egypt \\
+$^{\ddagger}$ Fraunhofer Institute for Integrated Circuits IIS, Erlangen, Germany}
+
+\setlength{\textfloatsep}{0.1cm}
+\setlength{\floatsep}{0.1cm}
+\setlength{\intextsep}{0.1cm}
+\AtBeginDocument{
+    \setlength{\abovedisplayskip}{1.5pt}
+    \setlength{\belowdisplayskip}{1.5pt}
+    \setlength{\abovedisplayshortskip}{1.5pt}
+    \setlength{\belowdisplayshortskip}{1.5pt}
+}
+
+\begin{document}
+
+\maketitle
+\let\thefootnote\relax\footnotetext{{\small
+\noindent\textbf{Acknowledgments}
+The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) under the NHR project b290dc. NHR funding is provided by federal and Bavarian state authorities. NHR@FAU hardware is partially funded by the German Research Foundation (DFG) - 440719683.
+}}
+
+\begin{abstract}
+
+Learned image compression has demonstrated superior rate-distortion performance compared to traditional standards for over the past years. However, despite these advancements, legacy formats like JPEG remain dominant. The primary barrier to adoption is not quality, but computational complexity. Real-time applications demand low decoding latencies for smooth user experiences, whereas current learned models often require significantly longer processing times, rendering them impractical for standard hardware. We identify that the majority of this computational burden lies in the initial high-resolution convolutional layers that transform pixels into feature maps. To address this, we propose an innovative hierarchical feature extraction transform. By utilizing fewer channels for high spatial resolution inputs and increasing channel depth only as spatial dimensions are reduced in the latent space, we significantly cut computational load without sacrificing bit rate reduction efficiency. This strategy reduces forward pass complexity from \(1256 \, \text{kMAC/Pixel}\) to just \(270 \, \text{kMAC/Pixel}\). This architectural shift offers an immediate solution for deploying efficient learned compression on existing devices without relying on future hardware acceleration.
+
+\end{abstract}
+
+\section{Introduction}
+
+It has been almost a decade since the introduction of end-to-end learned image compression \cite{balleVariationalImageCompression2018}. Since then, the field has witnessed substantial improvements in coding efficiency, consistently outperforming traditional methods \cite{jiangMLICLinearComplexity2024}. Yet, despite being over 25 years old, JPEG, and its successors like JPEG 2000, remains the dominant standard in the industry. This raises a critical question: if learned image compression offers significantly better improvement in visual quality and file size, why has there been almost no widespread adaptation?
+
+The answer is simple: complexity. While the rate-distortion performance of learned models is impressive, the computational cost required to achieve it is often prohibitive. In practical applications, user experience is paramount; for example, when scrolling through a gallery app, an image must be decoded and displayed in less than a second. If a model takes seconds or even minutes to open an image, it is unusable regardless of the compression quality. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{bd_psnr_256_256.png}
+    \vspace{-0.3cm}
+    \caption{The compression efficiency vs complexity of different learned image compression models. The complexity is measured in terms of (kMAC/Pixel) using BD-PSNR.}
+    \label{fig:complexity_psnr} 
+    \vspace{-0.1cm}
+\end{figure}
+
+Furthermore, we cannot simply rely on the potential arrival of specialized hardware accelerators. To ensure learned compression is viable today, even on older devices, we must address the architecture itself. We must ask: where exactly does the complexity lie?
+
+In a standard Convolutional Neural Network (CNN) based codec, the architecture typically consists of an encoder, quantization, entropy coding, and a decoder. An analysis of the computational flow reveals that the complexity is not evenly distributed. The entropy coding and operations within the latent space (the "hybrid" encoder/decoder stages) are relatively efficient because they operate on compressed, low-resolution data. The true bottleneck lies in the first few layers of the encoder and the final layers of the decoder. These layers are responsible for converting high-resolution raw images into sophisticated feature maps. Standard architectures often maintain a fixed number of channels throughout these layers, resulting in massive computational overhead at high spatial resolutions.
+
+To solve this, we propose a hierarchical feature extraction approach designed to optimize efficiency where it matters most. By restructuring the network to use fewer channels for high-resolution input layers and reserving higher channel counts for the lower-resolution latent space, we drastically reduce the operations required. Our contributions are as follows:
+
+\vspace{-0.2cm}
+\begin{itemize}
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+
+\item \textbf{Efficient Hierarchical Architecture:} We introduce a novel hierarchical feature extraction method that maps images from the pixel domain to the latent domain. This approach assigns fewer feature maps to larger spatial sizes and deeper feature representations to smaller sizes.
+
+\item \textbf{Drastic Complexity Reduction:} By targeting the heavy initial layers, we reduce the forward pass 
+% \newline
+complexity from 1256 kMAC/Pixel to only 270 kMAC/ Pixel,
+making the model viable for devices without specialized hardware accelerators.
+
+\item \textbf{Competitive Performance:} We utilize a hyper- 
+\newline
+autoencoder with a multi-reference entropy model, ensuring that despite the reduction in complexity, the model maintains state-of-the-art compression performance. The model is trained on a large dataset spanning a significant portion of the image space manifold to ensure generalization.
+
+\item \textbf{Open Source Release:} We release our model with open source weights, enabling widespread adoption and reproducibility. Future quantized versions and practical applications for desktop and mobile devices are planned, making learned image compression accessible for real-world deployment across diverse hardware platforms. (available at: \href{https://ayman-ameen.github.io/loc-lic_page/}{loc-lic Webpage})
+\end{itemize}
+\vspace{-0.2cm}
+
+
+
+\section{Related Works}
+\begin{figure}[t]
+    \centering
+    % \vspace{-0.3cm}
+    \includegraphics[width=0.5\textwidth]{model_3.0.pdf}
+    \vspace{-0.3cm}
+    \caption{Overall view of the proposed architecture with hierarchical feature encoder and decoder.}
+    \label{fig:model}
+    % \vspace{-0.1cm}
+\end{figure}
+Traditional image compression algorithms, such as JPEG 2000, often lack the flexibility of non-linear mapping to input data through a learning process. To address these limitations, a novel learned image compression method using autoencoders has been developed. This approach involves training an autoencoder on large datasets of images or videos \cite{jiangMLICLinearComplexity2024, jiangMLICMultiReferenceEntropy2023, heELICEfficientLearned2022, theisLossyImageCompression2017}. 
+
+The key advantage of the learned image codec lies in the autoencoder's capacity to map images into a low-entropy, high-dimensional latent space, and subsequently reconstruct them back into the image space in a lossy manner \cite{balleVariationalImageCompression2018}. The learned image codec network architecture is typically composed of analysis and synthesis transform functions, which can be implemented using pure convolutional layers with a fixed number of channels $N$ \cite{liuComprehensiveBenchmarkSingle2020}. Some architectures incorporate residual connections with convolutional layers as the base model \cite{liuLearnedImageCompression2023}, while others utilize transformer-based layers \cite{luTransformerbasedImageCompression2022} or combine attention mechanisms with convolutional layers for enhanced performance \cite{chengLearnedImageCompression2020}. The goal is for the reconstructed image $\hat{x}$ to closely resemble the original image $x$ while minimizing the bit-rate $R$ used for the latent representation. Generally, higher entropy results in lower distortion and vice versa. Therefore, optimization aims to balance distortion $D(x,\hat{x})$ with entropy measured in bitrate $R$ (bits per pixel). A Lagrangian multiplier is employed to manage this trade-off between distortion and target bit-rate \cite{ chengLearnedImageCompression2020}. Quantization plays a critical role in bitrate reduction but introduces non-differentiability, hindering its direct integration with gradient-based optimization. To address this, continuous relaxations of the quantization operator, such as the straight-through estimator (STE), are widely adopted to enable differentiable approximations during training. An alternative strategy involves replacing deterministic quantization with stochastic rounding, which introduces non-biased gradients and has proven effective in recent compression frameworks \cite{minnenJointAutoregressiveHierarchical2018,balleVariationalImageCompression2018}. Both approaches circumvent the discontinuity in backpropagation while preserving quantization benefits. Stochastic rounding can be easily implemented by adding uniform noise to the unquantized values. A hybrid approach that combines both straight-through estimation and stochastic rounding also exists \cite{jiangMLICLinearComplexity2024}. Utilizing context information allows for more efficient data compression by reducing the bit-rate necessary for encoding. Context-based entropy models exploit surrounding or neighboring information to better predict and compress the current data. This strategy is particularly important in neural image compression, as it enables accurate bit-rate estimation while minimizing redundancy.
+
+To enhance compression efficiency, various context-based entropy models have been proposed. An autoregressive model was introduced to condition each pixel on previously decoded pixels for more effective context modeling \cite{minnenJointAutoregressiveHierarchical2018}. Another approach is the checkerboard convolution, which divides the latent representation into anchor and non-anchor parts, using the anchor part to extract context for the non-anchor part \cite{chengLearnedImageCompression2020}. Furthermore, channel-wise context models \cite{liuUnifiedEndEndFramework2020}, and channel-wise models with unevenly grouped contexts \cite{heELICEfficientLearned2022}, have been developed to exploit redundancy between channels. Recently, an attention-based architecture has been proposed to capture a diverse range of correlations within the latent representation \cite{jiangMLICMultiReferenceEntropy2023,jiangMLICLinearComplexity2024}.
+
+Another promising approach for learned image compression involves using an overfitted neural network to represent image data as a continuous neural function instead of discrete pixel values. This neural function can be evaluated to reconstruct the RGB values of image pixels. Various efforts have been made to represent entire datasets, such as MNIST, using neural functions for resolution-agnostic representations \cite{gordonConvolutionalConditionalNeural2020}. A significant advantage of modeling images as neural functions is their resolution agnosticism: images are represented continuously and can be evaluated at any desired resolution. This approach assumes that image signals are inherently continuous.
+
+Another approach for learned image compression involves using an overfitted neural network to represent image data as a continuous neural function instead of discrete pixel values. This neural function can be evaluated to reconstruct the RGB values of image pixels. COOL-CHIC \cite{blardOverfittedImageCoding2024} introduced an advanced overfitted learned image codec with reduced decoding complexity and improved compression efficiency. Recently, CLRIC \cite{CLRIC2025} introduced a hybrid approach that utilizes an overfitted learnable function to compress the latent representation from image autoencoders, showing very promising results. 
+
+\begin{figure}[h]
+    \centering
+    % \vspace{-0.3cm}
+    \includegraphics[width=\linewidth]{bd_ssim_256_256.png}
+    \vspace{-0.3cm}
+    \caption{The compression efficiency vs complexity of different learned image compression models. The complexity is measured in terms of (kMAC/Pixel) using BD-SSIM.}
+    \label{fig:complexity_ssim} 
+    % \vspace{-0.1cm}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+% \vspace{-0.3cm}
+\includegraphics[width=0.45\textwidth]{complexity_256_256.pdf}
+% \captionsetup{width=0.45\linewidth}
+\vspace{-0.3cm}
+\caption{Comparison of forward complexity between our approach and various learned image compression models}
+\label{fig:complexity_256_256_bar}
+% \vspace{-0.3cm}
+\end{figure}
+
+\section{Method}
+% \noindent\textbf{Motivation}
+Recent advancements in learned image compression have successfully minimized the rate-distortion Lagrangian $\mathcal{L} = \lambda D + R$. However, the practical deployment of these models is often hindered by the computational cost of the analysis and synthesis transforms. We formulate the deployment challenge as a constrained optimization problem where we seek to minimize $\mathcal{L}$ subject to a complexity budget $\mathcal{K}$:
+\begin{equation}
+\min_{\theta, \phi} \mathbb{E}_{x \sim p_x} \left[ -\log_2 p_{\hat{y}}(\hat{y}) + \lambda d(x, \hat{x}) \right] \quad \text{s.t.} \quad \mathcal{C}(g_{a_{hf}}, g_{s_{hf}}) \leq \mathcal{K}
+\end{equation}
+where $\mathcal{C}(\cdot)$ denotes the operational complexity (e.g., multiply-accumulate operations per pixel). Standard architectures often incur high $\mathcal{C}$ by maintaining high-dimensional feature maps throughout the network. In this paper, we propose a hierarchical feature extraction model designed to satisfy strict complexity constraints. While hierarchical representations have been utilized in generative synthesis and segmentation \cite{xuGenerativeHierarchicalFeatures2021,benyahiaMultifeaturesExtractionBased2022}, our approach optimizes the trade-off between the channel dimension $C$ and spatial resolution $H \times W$ to minimize MACs without sacrificing the expressiveness of the latent space.
+
+\subsection{Architecture Overview}
+
+\newcommand{\textwidthplot}{0.33}
+
+\begin{figure*}[h]
+\centering
+\vspace{-0.3cm}
+\begin{subfigure}{\textwidthplot\textwidth}
+\centering
+\includegraphics[width=\textwidth]{PSNRdBKodakDataset.pdf}
+\caption{}
+\label{fig:PSNRdBKodakDataset}
+\end{subfigure}%
+\hfill
+\begin{subfigure}{\textwidthplot\textwidth}
+\centering
+\includegraphics[width=\textwidth]{MSSSIMKodakDataset.pdf}
+\caption{}
+\label{fig:MSSSIMKodakDataset}
+\end{subfigure}%
+\hfill
+\begin{subfigure}{\textwidthplot\textwidth}
+\centering
+\includegraphics[width=\textwidth]{PSNRdBprofessionalvalid2020.pdf}
+\caption{}
+\label{fig:PSNRdBprofessionalvalid2020}
+\end{subfigure}
+\vspace{-0.3cm}
+\caption{Assessments and comparisons of image compression models using different metrics and datasets. (a) PSNR scores on the Kodak dataset, (b) MS-SSIM scores on the Kodak dataset, and (c) PSNR scores on the CLIC Professional Valid 2020 dataset.}
+\label{fig:combined_assessment_scores}
+\vspace{-0.3cm}
+\end{figure*}
+
+\newcommand{\textwidthfigure}{0.8}
+
+\begin{figure*}[h]
+\centering
+\vspace{-0.3cm}
+\includegraphics[width=\textwidthfigure\textwidth]{CLIC_3_bitrate_zoom_72.png}
+\captionsetup{width=\textwidthfigure\linewidth}
+\vspace{-0.3cm}
+\caption{Our novel approach performance compared to MLIC++ and LIC-TCM on image num. 3 from the CLIC Professional Valid 2020 dataset.}
+\label{fig:CLIC_3_bitrate_zoom_72}
+\vspace{-0.3cm}
+\end{figure*}
+
+\begin{figure*}[h]
+\centering
+\vspace{-0.3cm}
+\includegraphics[width=\textwidthfigure\textwidth]{Kodak_7_bitrate_zoom_72.png}
+\captionsetup{width=\textwidthfigure\linewidth}
+\vspace{-0.3cm}
+\caption{Comparison between our approach and different models on image num. 7 from the Kodak dataset.}
+\label{fig:Kodak_7_bitrate_zoom_72}
+\vspace{-0.3cm}
+\end{figure*}
+
+The proposed architecture, illustrated in Figure~\ref{fig:model}, aligns with the variational autoencoder framework used in mainstream learned image codecs \cite{jiangMLICLinearComplexity2024,chengLearnedImageCompression2020}. We define the input image space as $\mathcal{X} \subset \mathbb{R}^{3 \times H \times W}$ and the latent space as $\mathcal{Y}$. The system comprises a Hierarchical Feature Encoder acting as a non-linear analysis transform $g_{a_{hf}}(\cdot; \theta)\colon \mathcal{X} \to \mathcal{Y}$, parameterized by $\theta$.
+
+To enable entropy coding, the continuous latent vector $y$ is discretized via a quantization function $Q\colon \mathbb{R} \to \mathbb{Z}$. To allow for end-to-end differentiability during training, we approximate quantization by adding uniform noise $\mathcal{U}(-\frac{1}{2}, \frac{1}{2})$ or using straight-through estimation. The entropy model utilizes a hyper-prior structure derived from MLIC++ \cite{jiangMLICLinearComplexity2024}, estimating the distribution $p_{\hat{y}}(\hat{y} | \hat{z})$ where $\hat{z}$ is side information. This allows for the estimation of the bit-rate $R(\hat{y}) = -\sum_i \log_2 p_{\hat{y}_i}(\hat{y}_i | \hat{z})$.
+
+The reconstruction is generated by the synthesis transform $g_{s_{hf}}(\cdot; \phi)\colon \mathcal{Y} \to \mathcal{X}$, parameterized by $\phi$. The complete forward pass is mathematically formulated as:
+
+\begin{equation}
+y = g_{a_{hf}}(x; \theta), \quad \hat{y} = Q(y), \quad \hat{x} = g_{s_{hf}}(\hat{y}; \phi)
+\end{equation}
+
+where $x \in \mathcal{X}$ is the input image, $y$ is the unquantized latent representation, and $\hat{x}$ denotes the reconstructed image. The parameters $\theta$ and $\phi$ are optimized jointly to minimize the rate-distortion objective.
+
+\subsection{Hierarchical Feature Transform}
+
+The hierarchical feature architecture \cite{meyer2023,meyer2025} is defined as a composition of layer-wise transformations that map the input $x$ of dimensions $H \times W$ into a sequence of feature tensors with progressively increasing channel depth and decreasing spatial resolution. Let $F_i$ denote the feature representation at layer $i$, where $F_0 = x$. We define the transformation function for the $i$-th layer as $\mathcal{T}_i\colon \mathbb{R}^{C_i \times H_i \times W_i} \to \mathbb{R}^{C_{i+1} \times H_{i+1} \times W_{i+1}}$.
+
+The encoder $g_{a_{hf}}$ is constructed such that for the initial layer, the mapping produces basic features with $N$ channels while applying a spatial stride of 2. For subsequent layers $i > 0$, the transformation adheres to an inverse proportionality between spatial resolution and channel capacity. Specifically, the mapping $\mathcal{T}_i$ enforces:
+
+\begin{equation}
+C_{i+1} = 2C_i, \quad H_{i+1} = \frac{H_i}{2}, \quad W_{i+1} = \frac{W_i}{2}
+\end{equation}
+
+Consequently, the output of layer $i+1$ is a function of the input from layer $i$, expressed as:
+\begin{equation}
+F_{i+1} = \mathcal{T}_i(F_i) \quad \text{s.t.} \quad F_{i+1} \in \mathbb{R}^{2C_i \times \frac{H_i}{2} \times \frac{W_i}{2}}
+\end{equation}
+This design explicitly constrains the computational complexity. Assuming a convolutional operation at layer $i$ with kernel size $K \times K$, the computational cost $\Omega_i$ in MACs is proportional to:
+
+\begin{equation}
+\Omega_i \propto H_{i+1} W_{i+1} \cdot C_i \cdot C_{i+1} \cdot K^2
+\end{equation}
+
+By reducing the spatial dimensions $H_i, W_i$ geometrically while increasing channels $C_i$ arithmetically, we ensure that the total complexity $\sum_i \Omega_i$ remains bounded, effectively shifting the computational load from high-resolution spatial processing to high-dimensional semantic feature processing.
+\section{Experiments}
+ We train our models on $256 \times 256$ randomly cropped images from a custom dataset containing around $10^6$. Our custom dataset images is selected from ImageNet \cite{dengImageNetLargescaleHierarchical2009a}
+COCO 2017 \cite{linMicrosoftCOCOCommon2015} Vimeo90K \cite{xueVideoEnhancementTaskOriented2019}, and
+DIV2K \cite{agustssonNTIRE2017Challenge2017}. Our objective function consists of two terms. The first one is the mean square error between the original image and the model's output. The second term is the bitrate with a Lagrange multiplier to control the trade-off between the two terms and achieve the target bitrate.
+
+To assess and compare the performance and generalization capability of our model, we conducted validation experiments on two datasets and evaluated its performance against various models. The first dataset utilized is the Kodak dataset, a widely adopted benchmark for validating image compression models comprising 24 images. Additionally, we selected the CLIC Professional Valid 2020 dataset, which contains 41 high-resolution images, making it well-suited for evaluating compression in the current era of digital high-resolution imagery. We compared our approach against several learned image compression models, including MLIC++ \cite{jiangMLICLinearComplexity2024}, LIC-TCM \cite{liuLearnedImageCompression2023}, ELIC \cite{heELICEfficientLearned2022}, JPEG AI \cite{JPEGAI2025} (JPEG-AI-high variant) and two variations of Balle's model, Factorized and Hyperprior \cite{balleVariationalImageCompression2018}, two variations of Minnen's model, Mean, and Hyperprior \cite{minnenJointAutoregressiveHierarchical2018}, as well as Cheng's Anchor model \cite{chengLearnedImageCompression2020}, were included in the comparison. 
+
+\noindent\textbf{Quantitative analysis}
+We evaluated the complexity of our model in terms of forward operations measured as kMAC/
+Pixel, comparing this against other models to assess its efficiency. Using Cheng \cite{chengLearnedImageCompression2020} as a baseline, illustrated in Figure \ref{fig:complexity_psnr}, our model exhibited a significantly reduced complexity of approximately 270 kMAC/Pixel while maintaining superior performance over the Cheng model, which has a complexity of 933 kMAC/Pixel. Moreover, our model outperformed those by Balle and Minnen at both lower and higher bit-rates; these models utilize two different approaches corresponding to varying levels of complexity. An average model complexity was considered for comparison purposes. On the other hand, MLIC++ proved more efficient with a complexity of around 1256 kMAC/Pixel that we could not surpass. Additionally, our model achieves competitive results in terms of the Structural Similarity Index Measure (SSIM) metric, indicating higher values that align with reduced complexity, as shown in Figure \ref{fig:complexity_ssim}. We conducted a comprehensive evaluation of our approach, specifically focusing on a forward path that is responsible for the image encoding and decoding phases. Our analysis, depicted in Figure \ref{fig:complexity_256_256_bar}, compares our method to other advanced learned image compression models. Notably, our model demonstrated the lowest complexity, outperforming leading models such as MILC++.
+
+We plotted rate-distortion curves for both Peak Signal-to-Noise Ratio (PSNR) and Multi-Scale Structural Similarity Index Measure (MS-SSIM) using the Kodak and CLIC Professional Validation 2020 datasets, as illustrated in Figure \ref{fig:combined_assessment_scores}. Our model exhibits behavior comparable to that of high-complexity models such as MLIC++ \cite{jiangMLICLinearComplexity2024} and ELIC, while maintaining significantly lower complexity. In terms of PSNR, our model's performance is shown in Figure \ref{fig:combined_assessment_scores}(a), and for MS-SSIM, the performance is depicted in Figure \ref{fig:combined_assessment_scores}(b).
+
+% It is observed that our model's performance declines with increasing bit rates in both PSNR and MS-SSIM metrics. For larger images, such as those from the CLIC dataset (Figure \ref{fig:combined_assessment_scores}(c)), our model underperforms compared to other state-of-the-art models. This performance gap can be attributed to training conducted exclusively on $256 \times 256$ pixel images. This limitation could potentially be addressed by including a mixture of $256 \times 256$ and larger sizes, such as $512 \times 512$, during training.
+
+\noindent\textbf{Qualitative analysis} 
+In our study, we evaluated the visual performance of our model using two distinct datasets, Kodak and CLIC, as illustrated in Figures \ref{fig:CLIC_3_bitrate_zoom_72} and \ref{fig:Kodak_7_bitrate_zoom_72}. Our findings indicate that our model achieves a performance comparable to the state-of-the-art learned image compression model, like MLIC++ with a marginal increase in the bit rate while maintaining reduced complexity and preserves competitive performance compared to existing models. 
+
+\section{Conclusion}
+
+In this study, we introduce an innovative image compression model with reduced computational complexity, achieving performance comparable to state-of-the-art models. Our method leverages hierarchical feature extraction transforms to significantly lower complexity while effectively maintaining bit rate reduction. We conducted various comparisons with existing learned image compression models, focusing on computational complexity and performance metrics such as PSNR, and MS-SSIM. 
+% Furthermore, we presented our rate-distortion curves with respect to PSNR and MS-SSIM across two benchmark datasets. We also performed qualitative analysis and visual assessments of the compressed images.
+ Our model demonstrated performance on par with state of the art models while retaining minimal complexity.
+
+% \begingroup
+% \footnotesize \small  % Change this to any size you prefer, such as \small or \scriptsize
+\bibliographystyle{IEEEbib}
+\bibliography{refs}% \endgroup
+\end{document}

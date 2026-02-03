@@ -56,18 +56,17 @@
             <div class="is-size-5 publication-authors">
               <!-- Paper authors -->
               <span class="author-block">
-                <a href="https://orcid.org/0009-0008-0752-2406" target="_blank">Ayman A. Ameen</a><sup>1,2</sup>,</span> <!--changeMe-->
+                <a href="https://orcid.org/0009-0008-0752-2406" target="_blank">Ayman A. Ameen</a><sup>1</sup>,</span> <!--changeMe-->
                 <span class="author-block">
-                  <a href="https://orcid.org/0000-0001-7721-0426" target="_blank">Thomas Richter</a><sup>1</sup>,</span> <!--changeMe-->
+                  <a href="https://orcid.org/0000-0001-7721-0426" target="_blank">Thomas Richter</a><sup>2</sup>,</span> <!--changeMe-->
                   <span class="author-block">
-                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank"> André Kaup</a><sup>3</sup>,</span> <!--changeMe-->
+                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank"> André Kaup</a><sup>1</sup>,</span> <!--changeMe-->
                   </span>
                   </div>
 
                   <div class="is-size-5 publication-authors">
-                    <span class="author-block"><sup>1</sup> Fraunhofer Institute for Integrated Circuits IIS, Erlangen, Germany</span> <!--changeMe-->
-                    <span class="author-block"><sup>2</sup> Department of Physics, Faculty of Science, Sohag University, Egypt</span> <!--changeMe-->
-                    <span class="author-block"><sup>3</sup> Friedrich-Alexander University at Erlangen-Nürnberg, Erlangen, Germany</span> <!--changeMe-->
+                    <span class="author-block"><sup>1</sup> Friedrich-Alexander University Erlangen-Nürnberg, Germany</span> <!--changeMe-->
+                    <span class="author-block"><sup>2</sup> Fraunhofer Institute for Integrated Circuits IIS, Erlangen, Germany</span> <!--changeMe-->
                   </div>
 
                   <div class="column has-text-centered">
@@ -104,6 +103,17 @@
                   <span>arXiv</span>
                 </a>
               </span>
+
+              <!-- Hugging Face Link -->
+              <span class="link-block">
+                <a href="https://huggingface.co/AymanAmeen/loc-lic" target="_blank"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  &#129303;
+                </span>
+                <span>Hugging Face</span>
+              </a>
+            </span>
             </div>
           </div>
         </div>
@@ -122,7 +132,7 @@
         <div class="content has-text-justified">
           <p>
             <!--changeMe-->
-            Current learned image compression models typically exhibit high complexity, which demands significant computational resources. To overcome these challenges, we propose an innovative approach that employs hierarchical feature extraction transforms to significantly reduce complexity while preserving bit rate reduction efficiency. Our novel architecture achieves this by using fewer channels for high spatial resolution inputs/feature maps. On the other hand, feature maps with a large number of channels have reduced spatial dimensions, thereby cutting down on computational load without sacrificing performance. This strategy effectively reduces the forward pass complexity from 1256 kMAC/Pixel to just 270  kMAC/Pixel. As a result, the reduced complexity model can open the way for learned image compression models to operate efficiently across various devices and pave the way for the development of new architectures in image compression technology.
+            Learned image compression has demonstrated superior rate-distortion performance compared to traditional standards for over the past years. However, despite these advancements, legacy formats like JPEG remain dominant. The primary barrier to adoption is not quality, but computational complexity. Real-time applications demand low decoding latencies for smooth user experiences, whereas current learned models often require significantly longer processing times, rendering them impractical for standard hardware. We identify that the majority of this computational burden lies in the initial high-resolution convolutional layers that transform pixels into feature maps. To address this, we propose an innovative hierarchical feature extraction transform. By utilizing fewer channels for high spatial resolution inputs and increasing channel depth only as spatial dimensions are reduced in the latent space, we significantly cut computational load without sacrificing bit rate reduction efficiency. This strategy reduces forward pass complexity from 1256 kMAC/Pixel to just 270 kMAC/Pixel. This architectural shift offers an immediate solution for deploying efficient learned compression on existing devices without relying on future hardware acceleration.
           </p>
         </div>
       </div>
@@ -174,16 +184,18 @@
                   <div class="column is-half">
                     <div class="item">
                       <!-- Your image here --> <!--changeMe-->
-                      <img src="static/images/bd_psnr_256_256.png" alt="MY ALT TEXT"/>
+                      <img src="static/images/bd_psnr_256_256.png" alt="The compression efficiency vs complexity of different learned image compression models."/>
                       <h2 class="subtitle has-text-centered">
+                        The compression efficiency vs complexity of different learned image compression models. The complexity is measured in terms of (kMAC/Pixel) using BD-PSNR.
                       </h2>
                     </div>
                   </div>
                   <div class="column is-half">
                     <div class="item">
                       <!-- Your image here --> <!--changeMe-->
-                      <img src="static/images/bd_ssim_256_256.png" alt="MY ALT TEXT"/>
+                      <img src="static/images/bd_ssim_256_256.png" alt="The compression efficiency vs complexity of different learned image compression models."/>
                       <h2 class="subtitle has-text-centered">
+                        The compression efficiency vs complexity of different learned image compression models. The complexity is measured in terms of (kMAC/Pixel) using BD-SSIM.
                       </h2>
                     </div>
                   </div>
@@ -204,14 +216,16 @@
       <div id="results-carousel" class="carousel results-carousel">
        <div class="item">
         <!-- Your image here --> <!--changeMe-->
-        <img src="static/images/CLIC_3_bitrate_zoom_72.png" alt="MY ALT TEXT"/>
+        <img src="static/images/CLIC_3_bitrate_zoom_72.png" alt="Our novel approach performance compared to MLIC++ and LIC-TCM"/>
         <h2 class="subtitle has-text-centered">
+          Our novel approach performance compared to MLIC++ and LIC-TCM on image num. 3 from the CLIC Professional Valid 2020 dataset.
         </h2>
       </div>
       <div class="item">
         <!-- Your image here --> <!--changeMe-->
-        <img src="static/images/Kodak_7_bitrate_zoom_72.png" alt="MY ALT TEXT"/>
+        <img src="static/images/Kodak_7_bitrate_zoom_72.png" alt="Comparison between our approach and different models"/>
         <h2 class="subtitle has-text-centered">
+          Comparison between our approach and different models on image num. 7 from the Kodak dataset.
        </h2>
      </div>
   </div>
@@ -224,10 +238,10 @@
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>
         <pre><code>
-      @article{ameen2021loclic,
+      @article{ameen2026loclic,
         title={LoC-LIC: Low Complexity Learned Image Coding Using Hierarchical Feature Transforms},
         author={Ameen, Ayman A and Richter, Thomas and Kaup, Andr{\'e}},
-        year={2025}
+        year={2026}
   }
       </code></pre>
     </div>
